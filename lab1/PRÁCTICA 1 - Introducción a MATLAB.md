@@ -67,7 +67,7 @@ remoh(1:2:end) = remoh1
 % Copiamos de 2 en 2 (comenzando en posición 2) el vector remoh 2 al vector remoh
 remoh(2:2:end) = remoh2
 % Inveritmos el orden
-remoh = remoh(length(remoh):-1:1)
+remoh = remoh(length(remoh):-1:1) % equivalente: flip(remoh)
 ```
 
 **b.** Guarde el vector en formato wav usando la función audiowrite (use help audiowrite). Fíjese que esta función admite como parámetro una frecuencia de muestreo (fs) que fue cargada al leer 'remoh1.mat'

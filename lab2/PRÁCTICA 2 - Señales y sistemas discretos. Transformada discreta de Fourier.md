@@ -170,7 +170,7 @@ P9. Construya la respuesta impulsional de un filtro reverberador con las especif
 
 ```matlab
 audio_x = audiorecorder(16000, 16, 1);
-audio_x.record(1);
+audio_x.record(1); % alternativamente con una funcion blocante: recordblocking(audio_x, 1)
 x = audio_x.getaudiodata(); % Señal de entrada (audio 16kHz)
 
 % Generamos respuesta impulsional (filtro reverberador)
