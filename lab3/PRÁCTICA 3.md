@@ -21,7 +21,7 @@ subplot(2, 1, 1); stem(t1, x1); xlabel('nT_m1 (ms)'); ylabel('x1[n]'); title('Mu
 subplot(2, 1, 2); stem(t2, x2); xlabel('nT_m2 (ms)'); ylabel('x2[n]'); title('Muestreo a 8kHz');
 ```
 
-![[Pasted image 20261119194006.png]]
+![](images/p1_muestreo_32k_vs_8k.png)
 
 Obviamente la secuencia muestreada a 32kHz presenta un nivel de detalle mayor, de hecho 4 veces mayor que la secuencia muestreada a 8kHz. Esto se debe simplemente a que se han tomado muestras de manera más frecuente, por ejemplo a 32kHz se toman muestras cada $1/32\text{kHz}=31.25\mu s$, mientras que para 8kHz se toman muestras cada $1/8\text{kHz}=125\mu s$.
 
@@ -45,7 +45,7 @@ subplot(2, 1, 1); stem(t, x1); xlabel('nT_m (s)'); ylabel('x1[n]'); title('Sinus
 subplot(2, 1, 2); stem(t, x2); xlabel('nT_m (s)'); ylabel('x2[n]'); title('Sinusoide de 12kHz muestreada a 16kHz');
 ```
 
-![[Pasted image 20261119211143.png]]
+![](images/p2_aliasing_12khz_a_16khz.png)
 
 En la sinusoide de 12kHz muestreada a 16kHz ocurre aliasing debido a que no se cumple el criterio de Nyquist ($F_m>2F_a$), ya que en este caso $16\text{kHz}<2(12\text{kHz})$. Entonces diferentes frecuencias de la señal original pueden general las mismas muestras, de forma que ya no podemos distinguir entre dos señales diferentes a partir de sus muestras. Para resolver esta confusión se debe muestrear la sinusoide de 12kHz por encima de la frecuencia de Nyquist, i.e. se debe cumplir $F_m>24\text{kHz}$.
 
@@ -67,11 +67,11 @@ N = 4;
 cd_dc(dur_s, Fo, F_a1, F_a2, fs, 'rectpuls', N, fc);
 ```
 
-![[Pasted image 20261120110800.png]]
+![](images/p3_reconstruccion_fc3k.png)
 
 Respecto a la señal original $x(t)$ observamos que la amplitud se ha atenuado y varía ligeramente en cada periodo, i.e. presenta una leve distorsión y un retardo respecto a $x(t)$. Esto se debe a que el filtro reconstructor empleado no es ideal (tren de pulsos no ideales).
 
-![[Pasted image 20261120113054.png]]
+![](images/p3_reconstruccion_fc1k5.png)
 
 Al disminuir la frecuencia de corte a $f_c=1.5\text{kHz}$, la señal se ha atenuado y distorsionado aún más. Esto se debe a que la frecuencia de corte del filtro paso bajo (LPF) coincide ahora con la frecuencia de la señal original ($f_{a1}=1.5\text{kHz}$) y, por tanto esta componente también se ve atenuada de forma considerable. Entonces el filtro no preserva adecuadamente la componente frecuencial original, lo que causa una distorsión en la señal reconstruida.
 
@@ -82,12 +82,12 @@ Recordemos que el proceso de muestreo introduce réplicas en el espectro de la s
 
 **P4**. Ahora introduciremos la suma de dos sinusoides fa1 = 1.5 kHz y fa2 = 6.5 kHz, manteniendo fs = 8 kHz y un filtro de orden 4 con fc = 3 kHz. ¿Qué ha sucedido con la señal a la salida del convertidor D/A? Muestree las dos señales por separado para entender lo sucedido. ¿Qué cambios haría en el proceso de muestreo y reconstrucción para recuperar perfectamente la señal original? Muestre un resultado concreto.
 
-![[Pasted image 20261120193828.png]]
+![](images/p4_suma_nula_fs8k.png)
 
 Observamos que durante el muestreo se pierde toda la información de la señal original (la escala vertical marca $\times10^{-14}$). Notemos que las dos sinusoides muestreadas a  $fs=8\text{kHz}$ se definen como: $$x_1[n] = sin(2π\frac{1.5}{8}), \space x_2[n]=sin(2π\frac{6.5}{8})$$. Pero podemos reescribir $x_2$ como: $$x_2[n]=sin(2πn-2π\frac{1.5}{8}n)=sin(-2π\frac{1.5}{8}n)=-x_1[n]$$. Esto implica que su suma es nula: $x_1[n]+x_2[n]=0$.
 Entonces, muestrear ambas señales a 8kHz resulta en la misma señal, pero una de ellas con signo opuesto. Esto se puede observar en el siguiente gráfico:
 
-![[Pasted image 20261120211717.png]]
+![](images/p4_sinusoides_por_separado.png)
 
 Para recuperar la señal correctamente debemos ajustar dos parámetros:
 1. Frecuencia de muestreo ($f_s$): como que la componente frecuencial más alta es de 6.5kHz, $f_s=8\text{kHz}$ no cumple con el criterio de Nyquist. Es decir, necesitamos una frecuencia de muestreo que cumpla: $fs>2(6.5\text{kHz})=13\text{kHz}$. Por ejemplo podemos usar $f_s=18\text{kHz}$.
@@ -105,7 +105,7 @@ N = 4;
 % Conversión D/C mediante un ZOH
 cd_dc(dur_s, Fo, F_a1, F_a2, fs, 'rectpuls', N, fc);
 ```
- ![[Pasted image 20261120213410.png]]
+ ![](images/p4_reconstruccion_fs18k_fc9k.png)
 
 **P5**. Tome la señal muestreada a 8 kHz y, utilizando “:” de MATLAB, diézmela por factores 2, 4 y 8. Reproduzca las tres nuevas señales generadas con su nueva frecuencia de muestreo y analice su calidad. Visualice las nuevas señales en tiempo y en frecuencia. Explique el proceso de degradación que va sufriendo a medida que aumenta el diezmado usando el dominio temporal y frecuencial.
 
@@ -136,13 +136,13 @@ Desde el punto de vista temporal, se observa una pérdida progresiva de detalle 
 Desde el punto de vista frecuencial, la reducción de la frecuencia de muestreo implica una reducción en la frecuencia de Nyquist y, por tanto componentes frecuenciales que anteriormente podían representarse sin aliasing, posiblemente se solapen sobre otras componentes, provocando distorsión. Además, de las gráficas observamos que las posiciones de las componentes frecuenciales cambian a medida que baja la frecuencia de muestreo. 
 
 **Diezmado por factor D=2**:
-![[Pasted image 20261120233942.png]]
+![](images/p5_diezmado_D2.png)
 
 **Diezmado por factor D=4**:
-![[Pasted image 20261120233950.png]]
+![](images/p5_diezmado_D4.png)
 
 **Diezmado por factor D=8**:
-![[Pasted image 20261120233956.png]]
+![](images/p5_diezmado_D8.png)
 
 **P6**. Tome la señal muestreada a 8 kHz y, utilizando “:” de MATLAB y otros que considere convenientes, expándala por factores 2 y 4. Reproduzca las dos nuevas señales generadas y analice su calidad ¿Qué problema tienen? Visualice las nuevas señales en tiempo y en frecuencia y explique cuál es la causa del problema. Utilice el comando de MATLAB interp para hacer conjuntamente el proceso de expansión y filtrado. ¿Por qué no existe ahora ese problema? Represente las señales en el dominio de la frecuencia para explicarlo.
 
@@ -163,13 +163,13 @@ rep_tyf(x); rep_tyf(x_i2); rep_tyf(x_i4);
 Hemos creado dos secuencias, en las que hemos intercalado ceros por factores $I=2$ e $I=4$. Al reproducir estas señales escuchamos un sonido "metálico" y un cierto "pitido" de fondo. Esto se debe a la aparición de réplicas de la componente frecuencial original a lo largo del espectro, y este fenómeno se ve reflejado en la representación de las señales donde observamos $I-1$ réplicas del espectro original. Por esta razón se debe aplicar un LPF tras la interpolación con el objetivo de eliminar estas réplicas que aparecen sobre la frecuencia de Nyquist original.
 
 **Señal original sin modificar**:
-![[Pasted image 20261121121747.png]]
+![](images/p6_interpolacion_original.png)
 
 **Interpolación por factor I=2**:
-![[Pasted image 20261121121623.png]]
+![](images/p6_interpolacion_I2.png)
 
 **Interpolación por factor I=4**:
-![[Pasted image 20261121121629.png]]
+![](images/p6_interpolacion_I4.png)
 
 Si usamos el comando `interp`, observamos en la representación frecuencial de las señales que las réplicas se han prácticamente eliminado por completo. Esto se debe a que tras realizar el intercalado de ceros, aplica un filtrado (LPF) que atenúa de forma considerable las réplicas que occurren sobre la frecuencia de Nyquist.
 
@@ -180,10 +180,10 @@ rep_tyf(y_i2); rep_tyf(y_i4);
 ```
 
 **Interpolación por factor I=2 + LPF**:
-![[Pasted image 20261121124606.png]]
+![](images/p6_interpolacion_I2_lpf.png)
 
 **Interpolación por factor I=4 + LPF**:
-![[Pasted image 20261121124654.png]]
+![](images/p6_interpolacion_I4_lpf.png)
 
 **P7**. A partir de la señal muestreada a 8 kHz, relacione los procesos de diezmado e interpolación con los de aceleración y ralentización de la voz. Represente las señales en los dominios temporal y frecuencial para comprobar que se ha conseguido el efecto y explique por qué las señales se oyen más agudas o graves.
 
@@ -191,13 +191,13 @@ El diezmado se puede relacionar con la aceleración de la voz si reproducimos la
 Matemáticamente, dada una secuencia de $N$ muestras y una frecuencia de muestreo $F_m$, la duración de la señal viene dada por $T=N/F_m$. Por tanto si aplicamos un diezmado por un factor $D$, la secuencia contiene $N/D$ muestras. Para preservar la duración original de la señal, habría que reproducirla a la frecuencia de muestreo equivalente de $F_m/D$. En caso contrario, si la reproducimos a $F_m$, la duración se reduce a $T/D$, acelerando la señal.
 
 La siguiente gráfica representa diezmado por un factor $D=4$, donde observamos que la duración se ha reducido por el mismo factor y las frecuencias han aumentado:
-![[Pasted image 20261121151932.png]]
+![](images/p7_aceleracion_diezmado_D4.png)
 
 La interpolación se puede relacionar con la ralentización de la voz si reproducimos la señal interpolada con la frecuencia de muestreo original. Esto ocurre porque la interpolación aumenta el número de muestras de la secuencia, i.e. la duración de la señal aumenta si la reproducimos a la $F_m$ original. Esto provoca la ralentización de la voz y una atenuación de las frecuencias, haciendo que se escuche más grave.
 Matemáticamente, es el caso complementario al diezmado. La interpolación por un factor $I$ implica una secuencia de $I \times N$ muestras, por lo que solo es posible preservar la duración de la señal si la reproducimos a $F_m \times I$. En caso contrario, la duración aumenta a $T \times I$, ralentizando la señal.
 
 La siguiente gráfica representa interpolación por un factor $I=4$ (incluyendo LPF), donde observamos que la duración ha aumentado por el mismo factor y las frecuencias se han disminuido:
-![[Pasted image 20261121152709.png]]
+![](images/p7_ralentizacion_interpolacion_I4.png)
 
 **P8**. Obtenga y represente en el dominio temporal una señal de voz acelerada (o
 ralentizada) por un factor 2.5.
@@ -211,6 +211,6 @@ sound(x_id, F_m);
 rep_tyf(x_id);
 ```
 
-![[Pasted image 20261121151248.png]]
+![](images/p8_ralentizacion_factor2p5.png)
 
 Alternativamente podríamos acelerar la voz por un factor $2.5$ intercambiando los factores ($I=2$, $D=5$). Pero este caso tiene riesgo de aliasing ya que esta nueva frecuencia de muestreo se ve reducida: $F_m'=\frac{2}{5}F_m=3.2\text{kHz}$, i.e. su frecuencia de Nyquist es de $1.6\text{kHz}$ y requiere filtrar las componentes por encima de $1.6\text{kHz}$ para evitar aliasing.
