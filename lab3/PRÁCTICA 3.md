@@ -31,9 +31,9 @@ hacer para evitar que haya confusión entre las dos secuencias?
 
 ```matlab
 dur_s = 6e-3; % 6ms
-F = 2e3; % 4kHz
+F = 4e3; % 4kHz
 
-F_m = 32e3; % 16kHz
+F_m = 16e3; % 16kHz
 T_m = 1/F_m;
 t = 0:T_m:dur_s-T_m;
 x1 = sin(2*pi*F*t);
@@ -49,8 +49,8 @@ subplot(2, 1, 2); stem(t, x2); xlabel('nT_m (s)'); ylabel('x2[n]'); title('Sinus
 
 En la sinusoide de 12kHz muestreada a 16kHz ocurre aliasing debido a que no se cumple el criterio de Nyquist ($F_m>2F_a$), ya que en este caso $16\text{kHz}<2(12\text{kHz})$. Entonces diferentes frecuencias de la señal original pueden general las mismas muestras, de forma que ya no podemos distinguir entre dos señales diferentes a partir de sus muestras. Para resolver esta confusión se debe muestrear la sinusoide de 12kHz por encima de la frecuencia de Nyquist, i.e. se debe cumplir $F_m>24\text{kHz}$.
 
-*Ejemplo*: consideramos $x_1[n]=cos(2π\frac{12}{16}n)=cos(\frac{3π}{2}n)$ y $x_2[n]=cos(2π\frac{4}{16}n)=cos(\frac{π}{2}n)$.
-De aquí vemos que $x_1[n]=cos(\frac{3π}{2}n)=cos(-\frac{π}{2}n)=x_2[n]$. Es decir, $x_1$ con frecuencia de 12kHz muestreada a 16kHz es indistinguible de $x_2$, una sinusoide con frecuencia de 4kHz. Esto es el llamado aliasing.
+En este caso tenemos que: $x_1[n] = sin(2π\frac{4}{16}t)=sin(\frac{π}{2}t)$ y $x_2[n] = sin(2π\frac{3}{4}t)=sin(\frac{3π}{2}t)$. Entonces es evidente que $x_1[n]=-x_2[n]$.
+Es decir occure aliasing, la sinusoide con frecuencia de $12\text{kHz}$ se puede confundir con una sinusoide de $4\text{kHz}$ de signo opuesto.
 
 **P3**. Sea una sinusoide continua de frecuencia fa1 = 1.5 kHz que representaremos en un intervalo de 4 ms. Como MATLAB representa señales discretas, aproximaremos la señal continua muestreando a una frecuencia mucho mayor que la requerida, por ejemplo, 80 kHz. La señal discreta se obtendrá muestreando la sinusoide a fs = 8 kHz. Después del procesado (no haremos nada) emplearemos un ZOH (pulsos rectangulares) para la conversión D/C. Para suavizar la señal pasaremos la señal por un filtro de orden 4 y frecuencia de corte fc = 3 kHz. Todo esto se especifica de la siguiente forma: cd_dc(4e-3,80e3,1.5e3,0,8e3,'rectpuls',4,3e3); Compruebe a la salida hemos recuperado aproximadamente la señal ¿qué diferencias observa respecto a la señal inicial? Disminuya la frecuencia de corte del filtro a 1.5 kHz. ¿Qué ha cambiado en la señal reconstruida?
 
@@ -85,7 +85,7 @@ Recordemos que el proceso de muestreo introduce réplicas en el espectro de la s
 ![](images/p4_suma_nula_fs8k.png)
 
 Observamos que durante el muestreo se pierde toda la información de la señal original (la escala vertical marca $\times10^{-14}$). Notemos que las dos sinusoides muestreadas a  $fs=8\text{kHz}$ se definen como: $$x_1[n] = sin(2π\frac{1.5}{8}), \space x_2[n]=sin(2π\frac{6.5}{8})$$. Pero podemos reescribir $x_2$ como: $$x_2[n]=sin(2πn-2π\frac{1.5}{8}n)=sin(-2π\frac{1.5}{8}n)=-x_1[n]$$. Esto implica que su suma es nula: $x_1[n]+x_2[n]=0$.
-Entonces, muestrear ambas señales a 8kHz resulta en la misma señal, pero una de ellas con signo opuesto. Esto se puede observar en el siguiente gráfico:
+Entonces, muestrear ambas señales a 8kHz resulta en la misma señal, pero una de ellas con signo opuesto (aliasing). Esto se puede observar en el siguiente gráfico:
 
 ![](images/p4_sinusoides_por_separado.png)
 
